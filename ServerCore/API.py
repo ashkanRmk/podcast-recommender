@@ -16,25 +16,35 @@ def check_api():
 @api.route('/Podcast', methods=["POST", "PUT", "DELETE"])
 def podcast_operations():
     if request.method == "POST":
-        data = request.json
-        if mongo.db.Podcasts.find({"id": data["id"]}).count() > 0:
-            return "id alreay exists"
-        subsets = []
-        for ss in data["subsets"]:
-            subsets.append(Subset(ss["id"], ss["name"]).__dict__)
-        podcast = Podcast(data["id"], data["name"], data["desc"], data["main"], subsets)
+        body = request.json
+        body["id"] = mongo.db.Podcasts.find({}).count() + 1
+
+        sub_subjects = []
+        for ss in body["sub_subjects"]:
+            sub_subjects.append(SubSubject(ss["id"], ss["name"]).__dict__)
+
+        podcast = Podcast(body["id"], body["name"], body["desc"], body["main_subject"], sub_subjects)
+
         res = mongo.db.Podcasts.save(podcast.__dict__)
-        return Response(str(res) + " created")
+        return Response(str(res) + " created successfully!")
+
     elif request.method == "PUT":
-        data = request.json
-        subsets = []
-        for ss in data["subsets"]:
-            subsets.append(Subset(ss["id"], ss["name"]).__dict__)
-        podcast = Podcast(data["id"], data["name"], data["desc"], data["main"], subsets)
-        res = mongo.db.Podcasts.update({"id": data["id"]}, podcast.__dict__)
+        body = request.json
+
+        if mongo.db.Podcasts.find({"id" : body["id"]}).count() < 1:
+            return "This Podcast doesn't exist!"
+
+        sub_subjects = []
+        for ss in body["sub_subjects"]:
+            sub_subjects.append(SubSubject(ss["id"], ss["name"]).__dict__)
+
+        podcast = Podcast(body["id"], body["name"], body["desc"], body["main_subject"], sub_subjects)
+
+        res = mongo.db.Podcasts.update({"id": body["id"]}, podcast.__dict__)
         return Response(json.dumps(res), mimetype="application/json")
+
     elif request.method == "DELETE":
-        return pass
+        return 1
 
 
 @api.route('/Podcasts', methods=["GET"])
