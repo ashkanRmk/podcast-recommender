@@ -13,26 +13,41 @@ def check_api():
     return Response(ApiResponse("OK", "Successfull", "Done"), 200, "application/json")
 
 
-@api.route('/GetPodcasts', methods=["POST", "PUT", "GET"])
-def get_podcasts():
+@api.route('/Podcast', methods=["POST", "PUT", "DELETE"])
+def podcast_operations():
     if request.method == "POST":
-        data = request.json
-        if mongo.db.Podcast.find({"id": data["id"]}).count() > 0:
-            return "id alreay exists"
-        subsets = []
-        for ss in data["subsets"]:
-            subsets.append(Subset(ss["id"], ss["name"]).__dict__)
-        podcast = Podcast(data["id"], data["name"], data["desc"], data["main"], subsets)
-        res = mongo.db.Podcast.save(podcast.__dict__)
-        return Response(str(res) + " created")
+        body = request.json
+        body["id"] = mongo.db.Podcasts.find({}).count() + 1
+
+        sub_subjects = []
+        for ss in body["sub_subjects"]:
+            sub_subjects.append(SubSubject(ss["id"], ss["name"]).__dict__)
+
+        podcast = Podcast(body["id"], body["name"], body["desc"], body["main_subject"], sub_subjects)
+
+        res = mongo.db.Podcasts.save(podcast.__dict__)
+        return Response(str(res) + " created successfully!")
+
     elif request.method == "PUT":
-        data = request.json
-        subsets = []
-        for ss in data["subsets"]:
-            subsets.append(Subset(ss["id"], ss["name"]).__dict__)
-        podcast = Podcast(data["id"], data["name"], data["desc"], data["main"], subsets)
-        res = mongo.db.Podcast.update({"id": data["id"]}, podcast.__dict__)
+        body = request.json
+
+        if mongo.db.Podcasts.find({"id" : body["id"]}).count() < 1:
+            return "This Podcast doesn't exist!"
+
+        sub_subjects = []
+        for ss in body["sub_subjects"]:
+            sub_subjects.append(SubSubject(ss["id"], ss["name"]).__dict__)
+
+        podcast = Podcast(body["id"], body["name"], body["desc"], body["main_subject"], sub_subjects)
+
+        res = mongo.db.Podcasts.update({"id": body["id"]}, podcast.__dict__)
         return Response(json.dumps(res), mimetype="application/json")
-    elif request.method == "GET":
-        res = list(mongo.db.Podcast.find({}, {'_id': 0}))
+
+    elif request.method == "DELETE":
+        return 1
+
+
+@api.route('/Podcasts', methods=["GET"])
+def get_podcasts():
+        res = list(mongo.db.Podcasts.find({}, {'_id': 0}))
         return Response(json.dumps(res), mimetype="application/json")
