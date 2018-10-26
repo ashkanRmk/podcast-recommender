@@ -2,7 +2,6 @@ from flask import Blueprint
 from enum import Enum
 
 models = Blueprint('Models', __name__, 'ServerCore')
-from ServerCore.Core import mongo
 
 
 class AgeRange(Enum):
@@ -59,6 +58,8 @@ class Subset:
         self.id = id
         self.name = name
 
+
+from ServerCore.Core import mongo
 
 @models.route('/install-db')
 def intsall():

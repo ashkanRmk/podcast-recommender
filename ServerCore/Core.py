@@ -1,12 +1,13 @@
 from flask import Flask, blueprints, Response
 from flask_pymongo import PyMongo
-from ServerCore.Models import models
-from ServerCore.API import api
 
 app = Flask(__name__)
 app.config['MONGO_URI'] = "mongodb://localhost:27017/Recommender"
 mongo = PyMongo(app, config_prefix='MONGO')
+
+from ServerCore.Models import models
 app.register_blueprint(models)
+from ServerCore.API import api
 app.register_blueprint(api)
 
 
