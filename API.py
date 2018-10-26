@@ -3,9 +3,9 @@ import json
 
 api = Blueprint('API', __name__, 'ServerCore')
 
-from ServerCore.Models import *
-from ServerCore.Core import mongo
-from ServerCore.APIResponse import *
+from Models import *
+from app import mongo
+from APIResponse import *
 
 
 @api.route('/check-api', methods=["POST", "GET"])
