@@ -3,7 +3,7 @@ from flask_pymongo import PyMongo
 
 app = Flask(__name__)
 app.config['MONGO_URI'] = "mongodb://localhost:27017/Recommender"
-mongo = PyMongo(app, config_prefix='MONGO')
+mongo = PyMongo(app)
 
 from ServerCore.Models import models
 app.register_blueprint(models)
