@@ -75,7 +75,7 @@ class SubSubject:
         self.name = name
 
 
-from ServerCore.Core import mongo
+from app import mongo
 
 
 @models.route('/install-db')
