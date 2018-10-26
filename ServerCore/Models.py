@@ -63,6 +63,6 @@ from ServerCore.Core import mongo
 
 @models.route('/install-db')
 def intsall():
-    mongo.db.create_collection("Podcast")
-    mongo.db.create_collection("User")
+    mongo.db.create_collection("Podcasts")
+    mongo.db.create_collection("Users")
     return "db initated"
