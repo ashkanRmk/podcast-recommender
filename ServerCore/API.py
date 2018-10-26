@@ -31,12 +31,12 @@ def podcast_operations():
     elif request.method == "PUT":
         body = request.json
 
-        if mongo.db.Podcasts.find({"id" : body["id"]}).count() < 1:
+        if mongo.db.Podcasts.find({"id": body["id"]}).count() < 1:
             return "This Podcast doesn't exist!"
 
         sub_subjects = []
-        for ss in body["sub_subjects"]:
-            sub_subjects.append(SubSubject(ss["id"], ss["name"]).__dict__)
+        for i, ss in enumerate(body["sub_subjects"]):
+            sub_subjects.append(SubSubject(i, ss).__dict__)
 
         podcast = Podcast(body["id"], body["name"], body["desc"], body["main_subject"], sub_subjects)
 
