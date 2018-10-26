@@ -1,23 +1,68 @@
 from flask import Blueprint
-from flask_sqlalchemy import *
-import json
+from enum import Enum
 
 models = Blueprint('Models', __name__, 'ServerCore')
-db = SQLAlchemy()
 
 
-class User(db.Model):
-    __tablename__ = 'User'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(25), unique=True, nullable=False)
-    password = db.Column(db.String(25), nullable=False)
-    email = db.Column(db.String(25), nullable=False)
-    gender = db.Column(db.Boolean, nullable=False)
-    auth = db.Column(db.String(25), unique=True, nullable=True)
+class AgeRange(Enum):
+    under18 = 0
+    f18t24 = 1
+    f25t34 = 2
+    f35t44 = 3
+    f45t54 = 4
+    above55 = 5
 
+
+class User:
+    id = None
+    gender = None
+    age = None
+    rating = None
+
+    def __init__(self, id, gender, age, rating):
+        self.id = id
+        self.gender = gender
+        self.age = age
+        self.rating = rating
+
+
+class Rate:
+    id = None
+    rate = None
+
+    def __init__(self, id, rate):
+        self.id = id
+        self.rate = rate
+
+
+class Podcast:
+    id = None
+    name = None
+    desc = None
+    main = None
+    sub = None
+
+    def __init__(self, id, name, desc, main, sub):
+        self.id = id
+        self.name = name
+        self.desc = desc
+        self.main = main
+        self.sub = sub
+
+
+class Subset:
+    id = None
+    name = None
+
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
+
+from ServerCore.Core import mongo
 
 @models.route('/install-db')
 def intsall():
-    # db.create_all()
-    User.__table__.create(db.session.bind, checkfirst=True)
+    mongo.db.create_collection("Podcast")
+    mongo.db.create_collection("User")
     return "db initated"

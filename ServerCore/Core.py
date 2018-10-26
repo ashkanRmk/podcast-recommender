@@ -1,15 +1,14 @@
 from flask import Flask, blueprints, Response
-from ServerCore.Models import models, db
-from ServerCore.API import api
+from flask_pymongo import PyMongo
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:mirhajian' \
-                                        '@localhost:5432/RecommenderDB'
+app.config['MONGO_URI'] = "mongodb://localhost:27017/Recommender"
+mongo = PyMongo(app, config_prefix='MONGO')
 
+from ServerCore.Models import models
 app.register_blueprint(models)
+from ServerCore.API import api
 app.register_blueprint(api)
-db.init_app(app)
 
 
 @app.route('/')
