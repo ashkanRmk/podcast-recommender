@@ -80,3 +80,8 @@ def user_operations():
 
     res = mongo.db.Users.save(user.__dict__)
     return Response(str(res) + " created successfully!")
+
+@api.route('/Users', methods=["GET"])
+def get_users():
+    res = list(mongo.db.Users.find({}, {'_id': 0}))
+    return Response(json.dumps(res), mimetype="application/json")
