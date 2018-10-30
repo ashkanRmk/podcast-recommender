@@ -1,2 +1,5 @@
 [requires]
 python_version = "3.5.2"
+
+Flask==1.0.2
+Flask-PyMongo==2.1.0
